@@ -18,7 +18,10 @@ import android.view.*
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.concurrent.thread
+// fonte https://gist.github.com/enzoftware/87a25a790ac43433dc019b1eb43ba283
 
+// O SensorEventListener implementará os métodos de leitura dos sensores
+// O Parcerable implementará os métodos para permitir enviar objetos entre as views do app
 class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
 
     private var acelerometro: Sensor? = null
@@ -55,6 +58,8 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
+    // se alterar algo no sensor, a terá receberá o método updateME
+    // que é responsável por alterar os itens na tela
     override fun onSensorChanged(event: SensorEvent?) {
         if(event != null){
             groundView!!.updateMe(event.values[1], event.values[0])
@@ -92,7 +97,8 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
             return arrayOfNulls(size)
         }
     }
-
+    // essa classe será responsável por desenhar os itens na tela
+    // quando houver uma thread
     class DrawThread(surfaceHolder: SurfaceHolder,
                      panel: GroundView): Thread(){
         private var surfaceHolder: SurfaceHolder? = null
@@ -127,6 +133,9 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
         }
     }
 
+
+    // essa classe ficará responsável por implementar a thread
+    // que apaga e desenha os itens da tela em cada momeno
     class GroundView(context: Context?): SurfaceView(context),
             SurfaceHolder.Callback{
 
@@ -145,14 +154,13 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
         var windowComprimento: Int = 0
         var windowAltura: Int = 0
 
+        // variáveis para setar as bordas e permitir vibrar o celular
         var noBorderX = false
         var noBorderY = false
         var vibratorService: Vibrator? = null
         var thread:MainActivity.DrawThread? = null
 
-        var obstaculoIcon: Bitmap? = null
-        var obsAltura: Int = 0
-        var obsComprimento: Int = 0
+        // ao instanciar a tela
         init {
             holder.addCallback(this)
 
@@ -182,28 +190,46 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
 
         }
 
+        // estarta a thread
         override fun surfaceCreated(holder: SurfaceHolder?) {
             thread!!.setRunning(true)
             thread!!.start()
         }
 
+        // desenha os itens na tela
         override fun draw(canvas: Canvas?) {
             super.draw(canvas)
             if(canvas != null){
+                // setando o fundo da tela, caso seja uma imagem,
+                // basta por uma imagem que ocupe a tela inteira e o
+                // método drawBitMap
                 canvas.drawColor(0xFFAAAAA)
+                // setando dado fixo na tela
+                canvas.drawBitmap(icon, 110.toFloat(), 110.toFloat(), null)
+                // setado os dados atualizados na tela
                 canvas.drawBitmap(icon, cx, cy, null)
             }
         }
 
+        // desenha os itens na tela
         override fun onDraw(canvas: Canvas?) {
             super.onDraw(canvas)
             if(canvas != null){
+                // setando o fundo da tela, caso seja uma imagem,
+                // basta por uma imagem que ocupe a tela inteira e o
+                // método drawBitMap
                 canvas.drawColor(0xFFAAAAA)
+                // setando dado fixo na tela
+                canvas.drawBitmap(icon, 10.toFloat(), 10.toFloat(), null)
+
+                // setado os dados atualizados na tela
                 canvas.drawBitmap(icon, cx, cy, null)
             }
         }
 
 
+        // atualiza os itens na tela
+        // lembre-se que a posição do item inicia do ponto superior esquerdo
         fun updateMe(inx: Float, iny: Float){
             lastGx += inx
             lastGy += iny
@@ -211,6 +237,8 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
             cx += lastGx
             cy += lastGy
 
+
+            // verificando os cantos laterais
             if(cx > (windowComprimento - picComprimento)) {
                 cx = (windowComprimento - picComprimento).toFloat()
                 lastGx = 0F
@@ -228,7 +256,7 @@ class MainActivity() : AppCompatActivity(), SensorEventListener, Parcelable {
             } else{
                 noBorderX = true
             }
-
+            // verificando os cantos verticais
             if (cy > (windowAltura - picAltura)) {
                 cy = (windowAltura - picAltura).toFloat()
                 lastGy = 0F

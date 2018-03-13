@@ -24,14 +24,16 @@ import com.tibaes.guardaamigoparte4.ui.CadastraAmigoActivity
 /**
  * Created by julia on 17/02/2018.
  */
-class ListaAmigoAdapter(val duasTelas: Boolean,
+class ListaAmigoAdapter(val doisFragmentos: Boolean,
                         private val amigos:List<Amigo>,
                         private val context:Context): Adapter<ListaAmigoAdapter.ViewHolder>() {
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val amigo = amigos[position]
         holder.let {
             it.nome.text = amigo.nome
             it.telefone.text = amigo.telefone
+
             it.itemView.setOnClickListener(){
                 val popUp = PopupMenu(context, holder.itemView)
                 popUp.inflate(R.menu.menu_item)
@@ -52,6 +54,13 @@ class ListaAmigoAdapter(val duasTelas: Boolean,
                 }
                 popUp.show()
             }
+
+            it.itemView.setOnLongClickListener({
+                Toast.makeText(context,
+                        "Abrir item",
+                        Toast.LENGTH_SHORT).show()
+                false
+            })
         }
     }
 

@@ -2,22 +2,19 @@ package com.tibaes.guardaamigoparte4.fragment
 
 
 import android.os.Bundle
-import android.app.Fragment
 import android.content.Intent
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
-import android.widget.Toast
 import com.tibaes.guardaamigoparte4.R
 import com.tibaes.guardaamigoparte4.ui.CadastraAmigoActivity
 import com.tibaes.guardaamigos.model.Amigo
 import com.tibaes.guardaamigosparte4.adapter.ListaAmigoAdapter
 import com.tibaes.guardaamigosparte4.dao.AmigoDao
 import kotlinx.android.synthetic.main.activity_lista_amigos.*
-import kotlinx.android.synthetic.main.fragment_cadastra_amigo.*
-import kotlinx.android.synthetic.main.fragment_cadastra_amigo.view.*
-
 
 /**
  * A simple [Fragment] subclass.
@@ -28,10 +25,13 @@ class ListaAmigosFragment : Fragment() {
     lateinit var listaAmigosRecycler: RecyclerView
     var lista:ArrayList<Amigo> = ArrayList<Amigo>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         val inf = inflater!!.inflate(R.layout.fragment_lista_amigos, container, false)
 
         // findViewById de volta na área porque ainda não está muito estável esse tal do kotlin
@@ -49,6 +49,7 @@ class ListaAmigosFragment : Fragment() {
         }
 
         listaAmigosRecycler = inf.findViewById<RecyclerView>(R.id.lista_amigos_recycler)
+
         return inf
     }
 
@@ -58,6 +59,8 @@ class ListaAmigosFragment : Fragment() {
             val layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
             it.layoutManager = layoutManager
         }
+        // ativar a ação quando move o item para a direita ou para a esquerda
+        setRecyclerVewItemTouchListener()
     }
 
     private fun listaAmigos(): List<Amigo> {
@@ -71,4 +74,31 @@ class ListaAmigosFragment : Fragment() {
         super.onResume()
     }
 
-}// Required empty public constructor
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val frag = fragment_cadastra_amigo_large
+        duasTelas = frag != null
+    }
+
+    private fun setRecyclerVewItemTouchListener() {
+        val itemTouchCallback = object :
+                ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT or
+                                ItemTouchHelper.RIGHT) {
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, viewHolder1: RecyclerView.ViewHolder): Boolean {
+                //2
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+                val position = viewHolder!!.adapterPosition
+                AmigoDao(context).exclui(lista.get(position))
+                lista.removeAt(position)
+                listaAmigosRecycler.adapter.notifyItemRemoved(position)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(listaAmigosRecycler)
+    }
+}

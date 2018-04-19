@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">GuardaAmigo Retrofit</string>
+    <string name="foto_amigo">Foto do amigo cadastrado</string>
+    <string name="nome">Nome</string>
+    <string name="telefone">(41) 99999-9999</string>
+    <string name="salvar">Salvar</string>
+    <string name="ligar">ligar</string>
+    <string name="mapa">mapa</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fundo_topo">Imagem do amigo para cadastro</string>
+    <string name="topo_cadastra">Cadastra Amigo</string>
+    <string name="email">e-mail</string>
+    <string name="endereco">endereço</string>
+    <string name="aniversario">aniversário</string>
+    <string name="topo_lista">Lista Amigos</string>
+
+
+    <string name="qtd_maquinas">Quantidade de máquinas - </string>
+    <string name="not_information">Informação não existente"</string>
+    <string name="qtd_pontos">Quantidade de pontos - </string>
+    <string name="estado">Estado - </string>
+    <string name="cidade">Cidade - </string>
+    <string name="todosEstados">Todos os estados</string>
+    <string name="curitiba">Curitiba</string>
+    <string name="pr">Paraná</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

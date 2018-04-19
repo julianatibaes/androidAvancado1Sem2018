@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_ligar"
+        android:icon="@android:drawable/sym_call_outgoing"
+        android:title="@string/ligar" />
+
+    <item
+        android:id="@+id/menu_maps"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        android:title="@string/mapa"/>
+</menu>
